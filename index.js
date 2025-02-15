@@ -12,6 +12,7 @@ const userRoutes = require("./src/routes/userRoutes");
 
 app.use(cors())
 app.use(express.json())
+app.use(express.static('public'))
 app.use("/api/auth",authRoutes)
 app.use("/api/bookings", bookingRoutes);
 app.use("/api/listings", listingRoutes);

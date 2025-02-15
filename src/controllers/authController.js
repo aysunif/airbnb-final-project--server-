@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
+const  transporter  = require("../config/nodemailer");
 
 /* USER REGISTER */
 
@@ -32,7 +33,19 @@ const registerUser = async (req, res) => {
       profileImagePath,
     });
 
-    await newUser.save(); 
+    console.log("newUser: ", newUser);
+    await newUser.save();
+    // const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, { expiresIn: "5h" });
+
+    await transporter.sendMail({
+        from: process.env.MAIL_USER,
+        to: email,
+        subject: "Account Verification | Airbnb",
+        html: `<h1>Click <a href="${process.env.APP_BASE_URL}/login">here</a> to verify your account</h1>`,
+      })
+      .catch((error) => {
+        console.log("error: ", error);
+      });
 
     res.status(200).json({ message: "User registered successfully!", user: newUser });
   } catch (err) {
@@ -46,13 +59,15 @@ const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ email: email.trim() });
+    const user = await User.findOne({ email: email});
+    console.log(user)
     if (!user) {
       return res.status(409).json({ message: "User doesn't exist!" });
     }
     
     /* Şifrənin doğrulanması */
     const isMatch = await bcrypt.compare(password, user.password);
+    console.log(isMatch)
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid Credentials!" });
     }
