@@ -5,7 +5,7 @@ const listingSchema = new Schema(
   {
     creator: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
+      ref: 'user',
     },
     category: {
       type: String,
@@ -55,7 +55,7 @@ const listingSchema = new Schema(
       type: Array,
       default:[]
     },
-    listingPhotoPaths: [{ type: String }], // Store photo URLs
+    listingPhotoPaths: [{ type: String }],
     title: {
       type: String,
       required: true

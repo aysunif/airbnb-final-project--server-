@@ -1,11 +1,11 @@
 const express = require("express");
+const upload = require("../middlewares/upload");
 const {
   createListing,
   getListingsByCategory,
   searchListings,
   getListingDetails,
 } = require("../controllers/listingController");
-const upload = require("../middlewares/upload");
 
 const router = express.Router();
 

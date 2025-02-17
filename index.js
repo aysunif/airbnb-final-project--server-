@@ -5,6 +5,7 @@ const PORT = process.env.PORT || 3000
 const DB_URL = process.env.DB_URL
 const mongoose = require('mongoose');
 const cors = require('cors')
+
 const authRoutes = require('./src/routes/authRoutes')
 const bookingRoutes = require("./src/routes/bookingRoutes");
 const listingRoutes = require("./src/routes/listingRoutes");

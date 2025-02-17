@@ -1,8 +1,11 @@
 const Listing = require("../models/listing");
 
+
 /* CREATE LISTING */
 const createListing = async (req, res) => {
   try {
+    console.log("Request Body:", req.body);
+    console.log("Uploaded Files:", req.files);
     const {
       creator,
       category,
@@ -31,6 +34,7 @@ const createListing = async (req, res) => {
     }
 
     const listingPhotoPaths = listingPhotos.map((file) => file.path);
+    console.log("Listing photo paths:", listingPhotoPaths);
 
     const newListing = new Listing({
       creator,
@@ -58,6 +62,7 @@ const createListing = async (req, res) => {
 
     res.status(200).json(newListing);
   } catch (err) {
+    console.log("Error:", err.message);
     res.status(409).json({
       message: "Fail to create Listing",
       error: err.message,
