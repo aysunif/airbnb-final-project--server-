@@ -1,4 +1,5 @@
 const Listing = require("../models/listing");
+const {cloudinary} = require("../config/imageCloudinary")
 
 
 /* CREATE LISTING */
@@ -33,8 +34,19 @@ const createListing = async (req, res) => {
       return res.status(400).send("No file uploaded.");
     }
 
-    const listingPhotoPaths = listingPhotos.map((file) => file.path);
-    console.log("Listing photo paths:", listingPhotoPaths);
+    // const listingPhotoPaths = listingPhotos.map((file) => file.path);
+    // console.log("Listing photo paths:", listingPhotoPaths);
+
+    const listingPhotoUrls = [];
+
+    for (let file of listingPhotos) {
+      const uploadResult = await cloudinary.uploader.upload(file.path, {
+        folder: "listings_photos", 
+        allowed_formats: ["jpg", "jpeg", "png", "gif"],  
+      });
+
+      listingPhotoUrls.push(uploadResult.secure_url);  
+    }
 
     const newListing = new Listing({
       creator,
@@ -50,7 +62,7 @@ const createListing = async (req, res) => {
       bedCount,
       bathroomCount,
       amenities,
-      listingPhotoPaths,
+      listingPhotoPaths: listingPhotoUrls,
       title,
       description,
       highlight,

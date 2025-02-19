@@ -5,7 +5,7 @@ const listingSchema = new Schema(
   {
     creator: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'user',
+      ref: 'User',
     },
     category: {
       type: String,

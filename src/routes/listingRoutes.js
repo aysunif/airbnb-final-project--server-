@@ -10,7 +10,7 @@ const {
 const router = express.Router();
 
 /* ROUTES */
-router.post("/create", upload.array("listingPhotos"), createListing);
+router.post("/create", upload.array("listingPhotos", 10), createListing);
 router.get("/", getListingsByCategory);
 router.get("/search/:search", searchListings);
 router.get("/:listingId", getListingDetails);

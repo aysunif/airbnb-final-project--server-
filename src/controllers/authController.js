@@ -2,6 +2,8 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 const  transporter  = require("../config/nodemailer");
+const {cloudinary} = require("../config/imageCloudinary")
+
 
 /* USER REGISTER */
 
@@ -14,7 +16,14 @@ const registerUser = async (req, res) => {
       return res.status(400).json({ message: "No profile image uploaded!" });
     }
 
-    const profileImagePath = profileImage.path;
+    // const profileImagePath = profileImage.path;
+
+    const uploadResult = await cloudinary.uploader.upload(profileImage.path, {
+      folder: "profile_images", 
+      allowed_formats: ["jpg", "jpeg", "png"], 
+    });
+
+    const profileImagePath = uploadResult.secure_url;
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
