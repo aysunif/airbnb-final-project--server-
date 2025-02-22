@@ -1,6 +1,6 @@
-const {Schema} = require("mongoose")
+const { Schema } = require("mongoose")
 
-const userSchema =  new Schema(
+const userSchema = new Schema(
   {
     firstName: {
       type: String,
@@ -18,6 +18,10 @@ const userSchema =  new Schema(
     password: {
       type: String,
       required: true,
+    },
+    isBanned: {
+      type: Boolean,
+      default: false,
     },
     profileImagePath: {
       type: String,

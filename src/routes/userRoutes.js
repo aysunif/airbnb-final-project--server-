@@ -1,5 +1,15 @@
 const express = require("express");
-const { getTrips, toggleWishlist, getProperties, getReservations } = require("../controllers/userController");
+const {
+    getTrips,
+    toggleWishlist,
+    getProperties,
+    getReservations,
+    getAllUsers,
+    getUserById,
+    toggleBanUser,
+    updateUser,
+    deleteUser,
+} = require("../controllers/userController");
 // const authMiddleware = require("../middlewares/authMiddleware");
 const router = express.Router();
 
@@ -8,11 +18,18 @@ router.patch("/:userId/:listingId", toggleWishlist);
 router.get("/:userId/properties", getProperties);
 router.get("/:userId/reservations", getReservations);
 
+router.get("/", getAllUsers);
+router.get("/:userId", getUserById);
+router.put("/:userId/ban", toggleBanUser);
+router.put("/:userId", updateUser);
+router.delete("/:userId", deleteUser);
+
+
 module.exports = router;
 
 
 // router.use((req, res, next) => {
-//     console.log("Request Received: ", req.method, req.url); 
+//     console.log("Request Received: ", req.method, req.url);
 //     next();
 // });
 
