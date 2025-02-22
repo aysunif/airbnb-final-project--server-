@@ -27,6 +27,11 @@ const userSchema = new Schema(
       type: String,
       default: "",
     },
+    role: {
+      type: String,
+      enum: ["user", "admin"],
+      default: "user",
+    },
     tripList: {
       type: Array,
       default: [],

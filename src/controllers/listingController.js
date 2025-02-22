@@ -1,5 +1,5 @@
 const Listing = require("../models/listing");
-const {cloudinary} = require("../config/imageCloudinary")
+const { cloudinary } = require("../config/imageCloudinary")
 
 
 /* CREATE LISTING */
@@ -41,11 +41,11 @@ const createListing = async (req, res) => {
 
     for (let file of listingPhotos) {
       const uploadResult = await cloudinary.uploader.upload(file.path, {
-        folder: "listings_photos", 
-        allowed_formats: ["jpg", "jpeg", "png", "gif"],  
+        folder: "listings_photos",
+        allowed_formats: ["jpg", "jpeg", "png", "gif"],
       });
 
-      listingPhotoUrls.push(uploadResult.secure_url);  
+      listingPhotoUrls.push(uploadResult.secure_url);
     }
 
     const newListing = new Listing({
@@ -147,7 +147,97 @@ const getListingDetails = async (req, res) => {
   }
 };
 
+/* GET ACTIVE LISTINGS */
+const getActiveListings = async (req, res) => {
+  try {
+    console.log("Fetching active listings...");
+
+    const listings = await Listing.find({ isApproved: true });
+
+    console.log("Listings found:", listings);
+
+    res.status(200).json(listings);
+  } catch (err) {
+    console.error("Error fetching listings:", err.message);
+
+    res.status(500).json({
+      message: "Failed to fetch active listings",
+      error: err.message,
+    });
+  }
+};
+
+
+/* APPROVE LISTING */
+const approveListing = async (req, res) => {
+  try {
+    const { listingId } = req.params;
+    const listing = await Listing.findByIdAndUpdate(
+      listingId,
+      { isApproved: true },
+      { new: true }
+    ).populate("creator");
+
+    if (!listing) {
+      return res.status(404).json({ message: "Listing not found" });
+    }
+
+    res.status(200).json({ message: "Listing approved successfully", listing });
+  } catch (err) {
+    res.status(500).json({
+      message: "Failed to approve listing",
+      error: err.message,
+    });
+  }
+};
+
+/* UPDATE LISTING */
+const updateListing = async (req, res) => {
+  try {
+    const { listingId } = req.params;
+    const updates = req.body;
+
+    const listing = await Listing.findByIdAndUpdate(listingId, updates, {
+      new: true,
+    }).populate("creator");
+
+    if (!listing) {
+      return res.status(404).json({ message: "Listing not found" });
+    }
+
+    res.status(200).json({ message: "Listing updated successfully", listing });
+  } catch (err) {
+    res.status(500).json({
+      message: "Failed to update listing",
+      error: err.message,
+    });
+  }
+};
+
+/* DELETE LISTING */
+const deleteListing = async (req, res) => {
+  try {
+    const { listingId } = req.params;
+    const listing = await Listing.findByIdAndDelete(listingId);
+
+    if (!listing) {
+      return res.status(404).json({ message: "Listing not found" });
+    }
+
+    res.status(200).json({ message: "Listing deleted successfully" });
+  } catch (err) {
+    res.status(500).json({
+      message: "Failed to delete listing",
+      error: err.message,
+    });
+  }
+};
+
 module.exports = {
+  deleteListing,
+  updateListing,
+  approveListing,
+  getActiveListings,
   createListing,
   getListingsByCategory,
   searchListings,
