@@ -17,6 +17,8 @@ passport.use(
 
         if (!user) {
           user = new User({
+            googleId: profile.id,
+            password: "google-login",
             firstName: profile.name.givenName,
             lastName: profile.name.familyName,
             email: profile.emails[0].value,
@@ -25,11 +27,11 @@ passport.use(
           await user.save();
         }
 
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-          expiresIn: "5h",
-        });
+        // const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+        //   expiresIn: "5h",
+        // });
 
-        return done(null, { user, token });
+        return done(null, user );
       } catch (error) {
         return done(error, null);
       }
@@ -37,10 +39,10 @@ passport.use(
   )
 );
 
-passport.serializeUser((user, done) => { 
-  done(null, user);
-});
+// passport.serializeUser((user, done) => { 
+//   done(null, user);
+// });
 
-passport.deserializeUser((obj, done) => {
-  done(null, obj);
-});
+// passport.deserializeUser((obj, done) => {
+//   done(null, obj);
+// });

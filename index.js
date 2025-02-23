@@ -8,7 +8,9 @@ const cors = require('cors')
 const session = require('express-session');
 const passport = require('passport')
 
+
 const authRoutes = require('./src/routes/authRoutes')
+const stripeRoutes = require("./src/routes/stripeRoutes");
 const bookingRoutes = require("./src/routes/bookingRoutes");
 const listingRoutes = require("./src/routes/listingRoutes");
 const userRoutes = require("./src/routes/userRoutes");
@@ -29,10 +31,13 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use("/api/auth",authRoutes)
+app.use("/api/stripe", stripeRoutes);
 app.use("/api/bookings", bookingRoutes);
 app.use("/api/listings", listingRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/auth-user", userAuthRoutes);
+
+
 
 mongoose.connect(DB_URL)
 .then(() => {
