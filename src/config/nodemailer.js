@@ -1,26 +1,16 @@
-// const nodemailer = require("nodemailer");
-// require("dotenv").config();
+const nodemailer = require("nodemailer");
+require("dotenv").config();
 
-// const transporter = nodemailer.createTransport({
-//     service: "gmail",
-//     auth: {
-//         user: process.env.EMAIL_USER,
-//         pass: process.env.EMAIL_PASS,
-//     },
-// });
+const transporter = nodemailer.createTransport({
+  host: "smtp.ethereal.email",
+  port: 587,
+  service: "gmail",
+  debug: true,
+  secure: false, // `true` for port 465, `false` for port 587
+  auth: {
+    user: process.env.MAIL_USER, 
+    pass: process.env.MAIL_PASS,
+  },
+});
 
-// const sendEmail = async (to, subject, text) => {
-//     try {
-//         await transporter.sendMail({
-//             from: process.env.EMAIL_USER,
-//             to,
-//             subject,
-//             text,
-//         });
-//         console.log("✅ Email göndərildi:", to);
-//     } catch (error) {
-//         console.error("❌ Email göndərilərkən xəta baş verdi:", error.message);
-//     }
-// };
-
-// module.exports = sendEmail;
+module.exports = transporter;

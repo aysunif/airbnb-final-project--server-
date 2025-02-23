@@ -1,4 +1,4 @@
-const {Schema} = require("mongoose")
+const { Schema } = require("mongoose")
 const mongoose = require("mongoose");
 
 const listingSchema = new Schema(
@@ -18,6 +18,14 @@ const listingSchema = new Schema(
     streetAddress: {
       type: String,
       required: true,
+    },
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
+    isApproved: {
+      type: Boolean,
+      default: false, 
     },
     aptSuite: {
       type: String,
@@ -53,9 +61,9 @@ const listingSchema = new Schema(
     },
     amenities: {
       type: Array,
-      default:[]
+      default: []
     },
-    listingPhotoPaths: [{ type: String }], // Store photo URLs
+    listingPhotoPaths: [{ type: String }],
     title: {
       type: String,
       required: true
@@ -77,7 +85,7 @@ const listingSchema = new Schema(
       required: true,
     }
   },
-  { timestamps: true}
+  { timestamps: true }
 )
 
 module.exports = listingSchema
