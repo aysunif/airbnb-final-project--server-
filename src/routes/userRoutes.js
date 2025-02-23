@@ -11,9 +11,7 @@ const {
     deleteUser,
     uploadProfileImage,
 } = require("../controllers/userController");
-// const multer = require("multer");
 const upload = require("../middlewares/upload");
-// const authMiddleware = require("../middlewares/authMiddleware");
 const router = express.Router();
 
 router.get("/:userId/trips", getTrips);
@@ -31,13 +29,4 @@ router.delete("/:userId", deleteUser);
 
 module.exports = router;
 
-
-// router.use((req, res, next) => {
-//     console.log("Request Received: ", req.method, req.url);
-//     next();
-// });
-
-// router.get("/profile", authMiddleware, getProfile);
-// router.put("/profile", authMiddleware, updateProfile);
-// router.delete("/delete", authMiddleware, deleteAccount);
 

@@ -8,7 +8,4 @@ router.post("/login", loginUser);
 
 module.exports = router;
 
-// router.get("/verify/:token", verifyEmail);
-// router.post("/forgot-password", forgotPassword);
-// router.post("/reset-password/:token", resetPassword);
 

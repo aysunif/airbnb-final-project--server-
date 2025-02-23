@@ -24,11 +24,13 @@ router.get(
 
     //   const { token } = req.user;
     //   res.redirect(`http://localhost:5173/login/${token}/${encodeURIComponent(JSON.stringify(req.user))}`);
+    console.log(res)
+    console.log(req.user)
     const token = jwt.sign({ id: req.user._id }, process.env.JWT_SECRET, {
         expiresIn: "5h",
       });
 
-    res.redirect(`http://localhost:5173/login?token=${token}`);
+    res.redirect(`http://localhost:5173/loginSuccess?token=${token}&user=${JSON.stringify(req.user)}`);
   }
     // }
   );

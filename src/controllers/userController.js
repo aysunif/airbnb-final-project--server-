@@ -1,8 +1,8 @@
 const Booking = require("../models/booking");
 const User = require("../models/user");
 const Listing = require("../models/listing");
+const transporter = require("../config/nodemailer");
 const cloudinary = require("../config/imageCloudinary").cloudinary;
-
 
 /* GET ALL USER */
 const getAllUsers = async (req, res) => {
@@ -11,7 +11,9 @@ const getAllUsers = async (req, res) => {
     res.status(200).json(users);
   } catch (err) {
     console.log(err);
-    res.status(404).json({ message: "Can not find users!", error: err.message });
+    res
+      .status(404)
+      .json({ message: "Can not find users!", error: err.message });
   }
 };
 
@@ -43,7 +45,30 @@ const toggleBanUser = async (req, res) => {
     user.isBanned = !user.isBanned;
     await user.save();
 
-    res.status(200).json({ message: `User ${user.isBanned ? "banned" : "unbanned"} successfully`, user });
+    await transporter
+      .sendMail({
+        from: process.env.MAIL_USER,
+        to: user.email,
+        subject: "Ban warning | Airbnb",
+        html: `<h1>${
+          user.isBanned ? "Your account is banned" : "Your ban has been lifted"
+        }</h1>
+      <p>${
+        user.isBanned
+          ? "Your account has been banned for violating our policies."
+          : "Your account is no longer banned. You can access your account again."
+      }</p>`,
+      })
+      .catch((error) => {
+        console.log("error: ", error);
+      });
+
+    res
+      .status(200)
+      .json({
+        message: `User ${user.isBanned ? "banned" : "unbanned"} successfully`,
+        user,
+      });
   } catch (err) {
     console.log(err);
     res.status(404).json({ error: err.message });
@@ -71,13 +96,15 @@ const updateUser = async (req, res) => {
   try {
     const { userId } = req.params;
     const updates = req.body;
-
-    const user = await User.findByIdAndUpdate(userId, updates, { new: true }).select("-password");
-
+console.log(req.body)
+    const user = await User.findByIdAndUpdate(userId, updates, {
+      new: true,
+    }).select("-password");
+console.log(user)
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-
+   console.log(user)
     res.status(200).json({ message: "User updated successfully", user });
   } catch (err) {
     console.log(err);
@@ -102,17 +129,19 @@ const deleteUser = async (req, res) => {
   }
 };
 
-
-
 /* GET TRIP LIST */
 const getTrips = async (req, res) => {
   try {
     const { userId } = req.params;
-    const trips = await Booking.find({ customerId: userId }).populate("customerId hostId listingId");
+    const trips = await Booking.find({ customerId: userId }).populate(
+      "customerId hostId listingId"
+    );
     res.status(202).json(trips);
   } catch (err) {
     console.log(err);
-    res.status(404).json({ message: "Can not find trips!", error: err.message });
+    res
+      .status(404)
+      .json({ message: "Can not find trips!", error: err.message });
   }
 };
 
@@ -127,16 +156,30 @@ const toggleWishlist = async (req, res) => {
       return res.status(404).json({ message: "User or Listing not found" });
     }
 
-    const favoriteListing = user.wishList.find((item) => item._id.toString() === listingId);
+    const favoriteListing = user.wishList.find(
+      (item) => item._id.toString() === listingId
+    );
 
     if (favoriteListing) {
-      user.wishList = user.wishList.filter((item) => item._id.toString() !== listingId);
+      user.wishList = user.wishList.filter(
+        (item) => item._id.toString() !== listingId
+      );
       await user.save();
-      res.status(200).json({ message: "Listing is removed from wish list", wishList: user.wishList });
+      res
+        .status(200)
+        .json({
+          message: "Listing is removed from wish list",
+          wishList: user.wishList,
+        });
     } else {
       user.wishList.push(listing);
       await user.save();
-      res.status(200).json({ message: "Listing is added to wish list", wishList: user.wishList });
+      res
+        .status(200)
+        .json({
+          message: "Listing is added to wish list",
+          wishList: user.wishList,
+        });
     }
   } catch (err) {
     console.log(err);
@@ -148,11 +191,15 @@ const toggleWishlist = async (req, res) => {
 const getProperties = async (req, res) => {
   try {
     const { userId } = req.params;
-    const properties = await Listing.find({ creator: userId }).populate("creator");
+    const properties = await Listing.find({ creator: userId }).populate(
+      "creator"
+    );
     res.status(202).json(properties);
   } catch (err) {
     console.log(err);
-    res.status(404).json({ message: "Can not find properties!", error: err.message });
+    res
+      .status(404)
+      .json({ message: "Can not find properties!", error: err.message });
   }
 };
 
@@ -160,11 +207,15 @@ const getProperties = async (req, res) => {
 const getReservations = async (req, res) => {
   try {
     const { userId } = req.params;
-    const reservations = await Booking.find({ hostId: userId }).populate("customerId hostId listingId");
+    const reservations = await Booking.find({ hostId: userId }).populate(
+      "customerId hostId listingId"
+    );
     res.status(202).json(reservations);
   } catch (err) {
     console.log(err);
-    res.status(404).json({ message: "Can not find reservations!", error: err.message });
+    res
+      .status(404)
+      .json({ message: "Can not find reservations!", error: err.message });
   }
 };
 
@@ -234,7 +285,6 @@ module.exports = {
 //   }
 // };
 
-
 // exports.deleteAccount = async (req, res) => {
 //   try {
 //       const user = await User.findById(req.user.id);
@@ -250,4 +300,3 @@ module.exports = {
 //       res.status(500).json({ message: "Xəta baş verdi", error: error.message });
 //   }
 // };
-
