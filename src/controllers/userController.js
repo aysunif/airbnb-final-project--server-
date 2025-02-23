@@ -1,8 +1,10 @@
 const Booking = require("../models/booking");
 const User = require("../models/user");
 const Listing = require("../models/listing");
+const cloudinary = require("../config/imageCloudinary").cloudinary;
 
 
+/* GET ALL USER */
 const getAllUsers = async (req, res) => {
   try {
     const users = await User.find({}).select("-password");
@@ -45,6 +47,22 @@ const toggleBanUser = async (req, res) => {
   } catch (err) {
     console.log(err);
     res.status(404).json({ error: err.message });
+  }
+};
+
+/* UPLOAD PROFILE IMAGE */
+const uploadProfileImage = async (req, res) => {
+  try {
+    const file = req.file;
+    if (!file) {
+      return res.status(400).json({ message: "No file uploaded" });
+    }
+
+    const result = await cloudinary.uploader.upload(file.path);
+    res.status(200).json({ profileImagePath: result.secure_url });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: err.message });
   }
 };
 
@@ -158,6 +176,7 @@ module.exports = {
   getAllUsers,
   getUserById,
   toggleBanUser,
+  uploadProfileImage,
   updateUser,
   deleteUser,
 };

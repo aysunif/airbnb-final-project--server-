@@ -9,7 +9,10 @@ const {
     toggleBanUser,
     updateUser,
     deleteUser,
+    uploadProfileImage,
 } = require("../controllers/userController");
+// const multer = require("multer");
+const upload = require("../middlewares/upload");
 // const authMiddleware = require("../middlewares/authMiddleware");
 const router = express.Router();
 
@@ -22,6 +25,7 @@ router.get("/", getAllUsers);
 router.get("/:userId", getUserById);
 router.put("/:userId/ban", toggleBanUser);
 router.put("/:userId", updateUser);
+router.post("/uploadProfileImage", upload.single("file"), uploadProfileImage);
 router.delete("/:userId", deleteUser);
 
 
