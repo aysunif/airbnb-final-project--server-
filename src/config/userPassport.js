@@ -9,7 +9,7 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID_USER,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET_USER,
-      callbackURL: "http://localhost:5000/api/auth-user/google/callback",
+      callbackURL: "https://airbnb-final-project-server.onrender.com/api/auth-user/google/callback",
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
@@ -27,10 +27,6 @@ passport.use(
           await user.save();
         }
 
-        // const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-        //   expiresIn: "5h",
-        // });
-
         return done(null, user );
       } catch (error) {
         return done(error, null);
@@ -39,10 +35,3 @@ passport.use(
   )
 );
 
-// passport.serializeUser((user, done) => { 
-//   done(null, user);
-// });
-
-// passport.deserializeUser((obj, done) => {
-//   done(null, obj);
-// });
