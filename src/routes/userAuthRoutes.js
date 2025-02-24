@@ -16,21 +16,14 @@ router.get(
     "/google/callback",
     passport.authenticate("google", { failureRedirect: "/login", session: false }),
     (req, res) => {
-    //     console.log("Google Auth User:", req.user); // Burada yoxla
 
-    //     if (!req.user) {
-    //       return res.redirect("http://localhost:5173/login?error=NoUser");
-    //     }
-
-    //   const { token } = req.user;
-    //   res.redirect(`http://localhost:5173/login/${token}/${encodeURIComponent(JSON.stringify(req.user))}`);
-    console.log(res)
-    console.log(req.user)
+    // console.log(res)
+    // console.log(req.user)
     const token = jwt.sign({ id: req.user._id }, process.env.JWT_SECRET, {
         expiresIn: "5h",
       });
 
-    res.redirect(`http://localhost:5173/loginSuccess?token=${token}&user=${JSON.stringify(req.user)}`);
+    res.redirect(`https://airbnb-final-project-client-clone1.vercel.app/loginSuccess?token=${token}&user=${JSON.stringify(req.user)}`);
   }
     // }
   );
