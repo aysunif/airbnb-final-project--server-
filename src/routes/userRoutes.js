@@ -22,7 +22,7 @@ router.get("/:userId/reservations", getReservations);
 router.get("/", getAllUsers);
 router.get("/:userId", getUserById);
 router.put("/:userId/ban", toggleBanUser);
-router.put("/:userId", upload.any("file"), updateUser);
+router.put("/:userId", upload.single("profileImage"), updateUser);
 router.post("/uploadProfileImage", upload.single("file"), uploadProfileImage);
 router.delete("/:userId", deleteUser);
 

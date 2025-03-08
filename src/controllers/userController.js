@@ -95,12 +95,33 @@ const uploadProfileImage = async (req, res) => {
 const updateUser = async (req, res) => {
   try {
     const { userId } = req.params;
-    const updates = req.body;
-console.log(req.body)
+    const profileImage = req.file;
+
+    let updates;
+
+    if(profileImage) {
+      const uploadResult = await cloudinary.uploader.upload(profileImage.path, {
+        folder: "profile_images",
+        allowed_formats: ["jpg", "jpeg", "png", "svg"],
+      });
+
+      const profileImagePath = uploadResult.secure_url;
+
+      updates = {
+        ...req.body,
+        profileImagePath: profileImagePath,
+      }
+
+    }else{
+      updates = {...req.body};
+    }
+    
     const user = await User.findByIdAndUpdate(userId, updates, {
       new: true,
     }).select("-password");
 console.log(user)
+
+
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
