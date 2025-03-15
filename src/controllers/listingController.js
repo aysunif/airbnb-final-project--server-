@@ -86,7 +86,7 @@ const getListingsByCategory = async (req, res) => {
   try {
     let listings;
     if (qCategory) {
-      listings = await Listing.find({ category: qCategory, isApproved: true }).populate("creator");
+      listings = await Listing.find({ category: qCategory }).populate("creator");
     } else {
       listings = await Listing.find().populate("creator");
     }
