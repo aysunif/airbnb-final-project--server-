@@ -1,12 +1,10 @@
 const Stripe = require("stripe");
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
-// Controller function to create a payment intent
 const createPaymentIntent = async (req, res) => {
   try {
     const { totalPrice } = req.body; 
 
-    // Create the payment intent
     const paymentIntent = await stripe.paymentIntents.create({
       amount: totalPrice * 100,
       currency: "usd",
