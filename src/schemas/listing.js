@@ -25,7 +25,7 @@ const listingSchema = new Schema(
     },
     isApproved: {
       type: Boolean,
-      default: false, 
+      default: false,
     },
     aptSuite: {
       type: String,
@@ -51,6 +51,13 @@ const listingSchema = new Schema(
       type: Number,
       required: true,
     },
+    rating: [
+      {
+        userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+        rating: { type: Number, min: 1, max: 5 },
+      },
+    ],
+    averageRating: { type: Number, default: 0 },
     bedCount: {
       type: Number,
       required: true,

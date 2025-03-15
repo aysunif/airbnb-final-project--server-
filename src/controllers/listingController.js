@@ -1,12 +1,11 @@
 const Listing = require("../models/listing");
 const { cloudinary } = require("../config/imageCloudinary")
+const User = require("../models/user");
 
 
 /* CREATE LISTING */
 const createListing = async (req, res) => {
   try {
-    console.log("Request Body:", req.body);
-    console.log("Uploaded Files:", req.files);
     const {
       creator,
       category,
@@ -227,7 +226,48 @@ const deleteListing = async (req, res) => {
   }
 };
 
+const addRating = async (req, res) => {
+  const { listingId, userId, rating } = req.body;
+
+  try {
+    if (rating < 1 || rating > 5) {
+      return res.status(400).json({ message: "Rating must be between 1 and 5" });
+    }
+
+    const listing = await Listing.findById(listingId);
+    if (!listing) {
+      return res.status(404).json({ message: "Listing not found" });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const existingRatingIndex = listing.rating.findIndex(
+      (r) => r.userId.toString() === userId
+    );
+
+    if (existingRatingIndex !== -1) {
+      listing.rating[existingRatingIndex].rating = rating;
+    } else {
+      listing.rating.push({ userId, rating });
+    }
+
+    const totalRatings = listing.rating.reduce((sum, r) => sum + r.rating, 0);
+    listing.averageRating = totalRatings / listing.rating.length;
+
+    await listing.save();
+
+    res.status(200).json({ message: "Rating added/updated successfully!", listing });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+
 module.exports = {
+  addRating,
   deleteListing,
   updateListing,
   approveListing,
