@@ -50,14 +50,12 @@ const toggleBanUser = async (req, res) => {
         from: process.env.MAIL_USER,
         to: user.email,
         subject: "Ban warning | Airbnb",
-        html: `<h1>${
-          user.isBanned ? "Your account is banned" : "Your ban has been lifted"
-        }</h1>
-      <p>${
-        user.isBanned
-          ? "Your account has been banned for violating our policies."
-          : "Your account is no longer banned. You can access your account again."
-      }</p>`,
+        html: `<h1>${user.isBanned ? "Your account is banned" : "Your ban has been lifted"
+          }</h1>
+      <p>${user.isBanned
+            ? "Your account has been banned for violating our policies."
+            : "Your account is no longer banned. You can access your account again."
+          }</p>`,
       })
       .catch((error) => {
         console.log("error: ", error);
@@ -97,7 +95,7 @@ const updateUser = async (req, res) => {
 
     let updates;
 
-    if(profileImage) {
+    if (profileImage) {
       const uploadResult = await cloudinary.uploader.upload(profileImage.path, {
         folder: "profile_images",
         allowed_formats: ["jpg", "jpeg", "png", "svg"],
@@ -110,20 +108,20 @@ const updateUser = async (req, res) => {
         profileImagePath: profileImagePath,
       }
 
-    }else{
-      updates = {...req.body};
+    } else {
+      updates = { ...req.body };
     }
 
     const user = await User.findByIdAndUpdate(userId, updates, {
       new: true,
     }).select("-password");
-console.log(user)
+    console.log(user)
 
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-   console.log(user)
+    console.log(user)
     res.status(200).json({ message: "User updated successfully", user });
   } catch (err) {
     res.status(404).json({ error: err.message });
@@ -163,22 +161,34 @@ const getTrips = async (req, res) => {
 
 /* ADD/REMOVE LISTING TO/FROM WISHLIST */
 const toggleWishlist = async (req, res) => {
+  const { userId, listingId } = req.params;
+
+  if (!listingId || !userId) {
+    return res.status(400).json({ message: "Listing ID or User ID is missing" });
+  }
+
   try {
-    const { userId, listingId } = req.params;
     const user = await User.findById(userId);
     const listing = await Listing.findById(listingId).populate("creator");
 
-    if (!user || !listing) {
-      return res.status(404).json({ message: "User or Listing not found" });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    if (!listing) {
+      return res.status(404).json({ message: "Listing not found" });
+    }
+
+    if (!user.wishList) {
+      user.wishList = [];
     }
 
     const favoriteListing = user.wishList.find(
-      (item) => item._id.toString() === listingId
+      (item) => item._id == listingId
     );
 
     if (favoriteListing) {
       user.wishList = user.wishList.filter(
-        (item) => item._id.toString() !== listingId
+        (item) => item._id != listingId
       );
       await user.save();
       res
@@ -198,7 +208,7 @@ const toggleWishlist = async (req, res) => {
         });
     }
   } catch (err) {
-    res.status(404).json({ error: err.message });
+    res.status(500).json({ error: err.message });
   }
 };
 

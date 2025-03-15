@@ -15,7 +15,7 @@ const upload = require("../middlewares/upload");
 const router = express.Router();
 
 router.get("/:userId/trips", getTrips);
-router.patch("/:userId/:listingId", toggleWishlist);
+router.put("/:userId/:listingId", toggleWishlist);
 router.get("/:userId/properties", getProperties);
 router.get("/:userId/reservations", getReservations);
 
