@@ -70,7 +70,6 @@ const toggleBanUser = async (req, res) => {
         user,
       });
   } catch (err) {
-    console.log(err);
     res.status(404).json({ error: err.message });
   }
 };
@@ -86,7 +85,6 @@ const uploadProfileImage = async (req, res) => {
     const result = await cloudinary.uploader.upload(file.path);
     res.status(200).json({ profileImagePath: result.secure_url });
   } catch (err) {
-    console.log(err);
     res.status(500).json({ error: err.message });
   }
 };
@@ -115,7 +113,7 @@ const updateUser = async (req, res) => {
     }else{
       updates = {...req.body};
     }
-    
+
     const user = await User.findByIdAndUpdate(userId, updates, {
       new: true,
     }).select("-password");
@@ -128,7 +126,6 @@ console.log(user)
    console.log(user)
     res.status(200).json({ message: "User updated successfully", user });
   } catch (err) {
-    console.log(err);
     res.status(404).json({ error: err.message });
   }
 };
@@ -145,7 +142,6 @@ const deleteUser = async (req, res) => {
 
     res.status(200).json({ message: "User deleted successfully" });
   } catch (err) {
-    console.log(err);
     res.status(404).json({ error: err.message });
   }
 };
@@ -159,7 +155,6 @@ const getTrips = async (req, res) => {
     );
     res.status(202).json(trips);
   } catch (err) {
-    console.log(err);
     res
       .status(404)
       .json({ message: "Can not find trips!", error: err.message });
@@ -203,7 +198,6 @@ const toggleWishlist = async (req, res) => {
         });
     }
   } catch (err) {
-    console.log(err);
     res.status(404).json({ error: err.message });
   }
 };
@@ -217,7 +211,6 @@ const getProperties = async (req, res) => {
     );
     res.status(202).json(properties);
   } catch (err) {
-    console.log(err);
     res
       .status(404)
       .json({ message: "Can not find properties!", error: err.message });
@@ -233,7 +226,6 @@ const getReservations = async (req, res) => {
     );
     res.status(202).json(reservations);
   } catch (err) {
-    console.log(err);
     res
       .status(404)
       .json({ message: "Can not find reservations!", error: err.message });

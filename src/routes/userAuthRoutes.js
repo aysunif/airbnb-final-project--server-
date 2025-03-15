@@ -3,8 +3,6 @@ const passport = require("passport");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
 
-// require("dotenv").config();
-
 // Google Auth Route
 router.get(
     "/google",
@@ -17,15 +15,13 @@ router.get(
     passport.authenticate("google", { failureRedirect: "/login", session: false }),
     (req, res) => {
 
-    // console.log(res)
-    // console.log(req.user)
     const token = jwt.sign({ id: req.user._id }, process.env.JWT_SECRET, {
         expiresIn: "5h",
       });
 
     res.redirect(`https://airbnb-final-project-client-clone1.vercel.app/loginSuccess?token=${token}&user=${JSON.stringify(req.user)}`);
   }
-    // }
+   
   );
 
 module.exports = router;

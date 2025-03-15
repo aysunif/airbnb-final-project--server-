@@ -27,7 +27,7 @@ const registerUser = async (req, res) => {
       return res.status(409).json({ message: "User already exists!" });
     }
 
-    /* Şifrənin hash olunması */
+    /* HASHED PASSWORD */
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(password, salt);
 
@@ -39,12 +39,10 @@ const registerUser = async (req, res) => {
       profileImagePath,
     });
 
-    console.log("newUser: ", newUser);
     await newUser.save();
 
     res.status(200).json({ message: "User registered successfully!", user: newUser });
   } catch (err) {
-    console.log(err);
     res.status(500).json({ message: "Registration failed!", error: err.message });
   }
 };
@@ -64,7 +62,6 @@ const loginUser = async (req, res) => {
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
-    console.log(isMatch);
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid Credentials!" });
     }
@@ -74,7 +71,6 @@ const loginUser = async (req, res) => {
 
     res.status(200).json({ token, user: userData });
   } catch (err) {
-    console.log(err);
     res.status(500).json({ error: err.message });
   }
 };

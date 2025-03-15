@@ -34,9 +34,6 @@ const createListing = async (req, res) => {
       return res.status(400).send("No file uploaded.");
     }
 
-    // const listingPhotoPaths = listingPhotos.map((file) => file.path);
-    // console.log("Listing photo paths:", listingPhotoPaths);
-
     const listingPhotoUrls = [];
 
     for (let file of listingPhotos) {
@@ -79,7 +76,6 @@ const createListing = async (req, res) => {
       message: "Fail to create Listing",
       error: err.message,
     });
-    console.log(err);
   }
 };
 
@@ -90,7 +86,7 @@ const getListingsByCategory = async (req, res) => {
   try {
     let listings;
     if (qCategory) {
-      listings = await Listing.find({ category: qCategory }).populate("creator");
+      listings = await Listing.find({ category: qCategory, isApproved: true }).populate("creator");
     } else {
       listings = await Listing.find().populate("creator");
     }
@@ -101,7 +97,6 @@ const getListingsByCategory = async (req, res) => {
       message: "Fail to fetch listings",
       error: err.message,
     });
-    console.log(err);
   }
 };
 
@@ -129,7 +124,6 @@ const searchListings = async (req, res) => {
       message: "Fail to fetch listings",
       error: err.message,
     });
-    console.log(err);
   }
 };
 
